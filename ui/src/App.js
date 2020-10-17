@@ -8,13 +8,9 @@ import Header from './components/Header'
 const App = () => {
   const [inputText, setInputText] = useState("");
   const [file, setFile] = useState("");
-  //sign in
-  const [inputUsername, setInputUsername] = useState("");
-  const [inputEmail, setinputEmail] = useState("");
-  const [inputToken, setinputToken] = useState("");
   return (
     <div className="App">
-      <Header setInputUsername={setInputUsername} setinputEmail={setinputEmail} setinputToken={setinputToken}/>
+      <Header />
       <h1>HackNC {inputText}</h1>
       <Search setInputText={setInputText} />
       <Upload file={file} setFile={setFile}/>

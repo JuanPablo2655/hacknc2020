@@ -14,7 +14,9 @@ const customStyles = {
     }
   };
 
-const Signin = ({ setInputUsername, setinputEmail }) => {
+const Signin = () => {
+    const [inputUsername, setInputUsername] = useState("");
+    const [inputEmail, setinputEmail] = useState("");
     const [modalIsOpen, setIsOpen] = useState(false)
     const openModal = () => {
         setIsOpen(true)
@@ -34,9 +36,9 @@ const Signin = ({ setInputUsername, setinputEmail }) => {
             <Modal isOpen={modalIsOpen} onAfteropen={afterOpenModal} onRequestClose={closeModal} style={customStyles} contentLabel="Example Modal">
                 <button onClick={closeModal}>close</button>
                 <h2>Sign In</h2>
-                <form onChange={afterOpenModal}>
-                    <input type="text" placeholder="Username/Email"/><br></br>
-                    <input type="password" placeholder="Password"/><br></br>
+                <form>
+                    <input onChange={afterOpenModal} type="text" placeholder="Username/Email"/><br></br>
+                    <input onChange={afterOpenModal} type="password" placeholder="Password"/><br></br>
                     <input type="submit" value="Submit"/>
                 </form>
             </Modal>

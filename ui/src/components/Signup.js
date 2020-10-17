@@ -14,7 +14,10 @@ const customStyles = {
     }
   };
 
-const Signup = ({ setInputUsername, setinputEmail, setinputToken }) => {
+const Signup = () => {
+    const [inputUsername, setInputUsername] = useState("");
+    const [inputEmail, setinputEmail] = useState("");
+    const [inputToken, setinputToken] = useState("");
     const [modalIsOpen, setIsOpen] = useState(false)
     const openModal = () => {
         setIsOpen(true)
