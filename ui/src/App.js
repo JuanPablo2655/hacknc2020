@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import {Route, Router, Redirect} from "react-router-dom";
 import history from "./history";
 import Signin from "./components/Signin";
+import DirectFactCreationModal from "./components/DirectFactCreationModal";
 
 function App() {
   const login_token = {
@@ -15,6 +16,7 @@ function App() {
   };
   const [search_query, set_search_query] = useState("");
   const [fact_ids, set_fact_ids] = useState(null);
+  const [modalIsOpen, setIsOpen] = useState(false);
   return (
     <Router history={history}>
       <div className="App">
@@ -27,6 +29,8 @@ function App() {
             }}
             on_search_update={() => {}}
           />
+          <button onClick={() => setIsOpen(true)}>Upload Fact</button>
+          <DirectFactCreationModal isOpen={modalIsOpen} onClose = {() => setIsOpen(false)} />
         </Route>
         <Route path="/results">
           <Header/>
