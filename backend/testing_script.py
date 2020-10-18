@@ -86,14 +86,14 @@ elif sys.argv[1] == "superior":
     headers = {"Login-Token": token_file.read()}
     token_file.close()
 
-    document_id_file = open("/tmp/document_id", "r")
-    document_id = document_id_file.read()
-    document_id_file.close()
+    fact_id_file = open("/tmp/fact_id", "r")
+    fact_id = fact_id_file.read()
+    fact_id_file.close()
 
 
     superior_fact = {
         "statement": "This is a superior fact statement",
-        "supporting_facts": [document_id]
+        "supporting_facts": [fact_id]
     }
 
     req = requests.post("{}/v1/create_fact".format(SERVER_ADDRESS), json = superior_fact, headers = headers)

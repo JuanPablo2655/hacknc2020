@@ -1,25 +1,17 @@
 import React from "react";
 import CreditPreview from "./CreditPreview";
-import DirectFact from "./DirectFact";
 import PdfPreview from "./PdfPreview";
 import TickReference from "./TickReference";
 
-const DirectFactComponent = ({
-  dFact,
-  getFact,
-  getUser,
-  setSelectedFact,
-  getSelectedFact,
-}) => {
+const DirectFactComponent = ({ fact, set_selected }) => {
   return (
     <div>
-      <DirectFact dFact={dFact} getFact={getFact} />
-      <PdfPreview dFact={dFact} />
-      <CreditPreview username={getUser()} />
+      <span>{fact.statement}</span>
+      <PdfPreview document_id={fact.document_id} />
+      <CreditPreview username={"todo replace"} />
       <TickReference
-        dFact={dFact}
-        setSelectedFact={setSelectedFact}
-        getSelectedFact={getSelectedFact}
+        fact_id={fact.metadata.fact_id}
+        set_selected={set_selected}
       />
     </div>
   );

@@ -1,32 +1,19 @@
 import React from "react";
 import FactPreviewComponent from "./FactPreviewComponent";
-import SuperiorFact from "./SuperiorFact";
 import TickReference from "./TickReference";
 
-const SuperiorFactComponent = ({
-  sFact,
-  dFact,
-  getFact,
-  getUser,
-  setSelectedFact,
-  getSelectedFact,
-  getResults,
-}) => {
+const SuperiorFactComponent = ({ fact, set_selected_fact }) => {
+  console.log(fact);
   return (
     <div>
-      <SuperiorFact sFact={sFact} getFact={getFact} />
-      <FactPreviewComponent
-        getFact={getFact}
-        getUser={getUser}
-        getResults={getResults}
-        sFact={sFact}
-        dFact={dFact}
-      />
+      <h1>{fact.statement}</h1>
       <TickReference
-        dFact={dFact}
-        setSelectedFact={setSelectedFact}
-        getSelectedFact={getSelectedFact}
+        fact_id={fact.metadata.fact_id}
+        set_selected={set_selected_fact}
       />
+      {fact.supporting_facts.map((fact_id) => {
+        return <FactPreviewComponent fact_id={fact_id} key={fact_id} />;
+      })}
     </div>
   );
 };
