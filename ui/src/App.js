@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { search } from "./utils";
-import "./App.css";
+import "./css/App.css";
 import Search from "./components/Search";
 import ResultsPage from "./components/ResultsPage";
+import Header from "./components/Header";
 
 function App() {
   const login_token = {
@@ -13,6 +14,7 @@ function App() {
   const [fact_ids, set_fact_ids] = useState(null);
   return (
     <div className="App">
+      <Header/>
       <Search
         on_search={(q) => {
           set_search_query(q);
