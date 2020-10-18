@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { search } from "./utils";
+import { search, upload_document, create_fact } from "./utils";
 import "./css/App.css";
 import Search from "./components/Search";
 import ResultsPage from "./components/ResultsPage";
 import Header from "./components/Header";
 
 function App() {
-  const login_token = {
-    token: "6670f3bf-c188-47bb-8019-a774fd2db0e0",
-    good_until: "2020-10-19T12:45:15.503529406Z",
-  };
   const [search_query, set_search_query] = useState("");
   const [fact_ids, set_fact_ids] = useState(null);
   return (

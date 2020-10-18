@@ -3,11 +3,11 @@ import React from "react";
 import Signin from "./Signin";
 import Signup from "./Signup";
 
-const Header = () => {
+const Header = ( {onSignin}) => {
   return (
     <header>
       <Signup/>
-      <Signin/>
+      <Signin onSignin={onSignin} />
     </header>
   );
 };
