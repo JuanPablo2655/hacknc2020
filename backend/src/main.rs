@@ -11,7 +11,7 @@ use uuid::Uuid;
 extern crate rocket;
 use rocket::{http::Method, response::NamedFile, Data, State};
 use rocket_contrib::json::Json;
-use rocket_cors::{AllowedHeaders, AllowedOrigins};
+use rocket_cors::AllowedOrigins;
 
 #[get("/")]
 fn index() -> &'static str {
