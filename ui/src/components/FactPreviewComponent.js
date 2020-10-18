@@ -1,11 +1,17 @@
 import React from 'react';
 import CreditPreview from './CreditPreview';
 
-const FactPreviewComponent = ({ get_fact, sFact, dFact, get_user }) => {
+const FactPreviewComponent = ({ getFact, sFact, dFact, getUser, getResults }) => {
     return (
         <div>
-            <h4>{get_fact()}</h4>
-            <CreditPreview username={get_user()} />
+            {/* {getResults.map((result) => (
+                if (result.supporting_documents === undefined){
+                    <SuperiorFact />
+                } else {
+                    <DirectFact />
+                }
+            ))} */}
+            <CreditPreview username={getUser()} />
         </div>
     );
 }

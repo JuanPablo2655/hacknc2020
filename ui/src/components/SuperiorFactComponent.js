@@ -3,19 +3,20 @@ import FactPreviewComponent from './FactPreviewComponent';
 import SuperiorFact from './SuperiorFact'
 import TickReference from './TickReference';
 
-const SuperiorFactComponent = ({ sFact, dFact, get_fact, get_user, set_selected_fact, get_selected_fact }) => {
+const SuperiorFactComponent = ({ sFact, dFact, getFact, getUser, setSelectedFact, getSelectedFact, getResults }) => {
     return (
         <div>
-            <SuperiorFact sFact={sFact} get_fact={get_fact} />
+            <SuperiorFact sFact={sFact} getFact={getFact} />
             <FactPreviewComponent 
-            get_fact={get_fact}
-            get_user={get_user} 
+            getFact={getFact}
+            getUser={getUser} 
+            getResults={getResults}
             sFact={sFact} 
             dFact={dFact}
             />
             <TickReference dFact={dFact} 
-            set_selected_fact={set_selected_fact} 
-            get_selected_fact={get_selected_fact} 
+            setSelectedFact={setSelectedFact} 
+            getSelectedFact={getSelectedFact} 
             />
         </div>
     );

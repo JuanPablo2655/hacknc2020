@@ -1,11 +1,11 @@
 import React from 'react';
 
-const TickReference = ({ set_selected_fact, get_selected_fact, dFact }) => {
+const TickReference = ({ setSelectedFact, getSelectedFact, dFact }) => {
     const selected_fact_handler = (e) => {
         if (e.target.checked === true) {
-            set_selected_fact([...get_selected_fact, dFact.fact_id])
+            setSelectedFact([...getSelectedFact, dFact.fact_id])
         } else {
-            set_selected_fact(get_selected_fact.filter(el => el !== dFact.fact_id));
+            setSelectedFact(getSelectedFact.filter(el => el !== dFact.fact_id));
         }
     }
     return (

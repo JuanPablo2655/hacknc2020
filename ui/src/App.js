@@ -1,6 +1,8 @@
 import React , { useState } from 'react';
 import './App.css';
+import Search from './components/Search';
 import DirectFactComponent from './components/DirectFactComponent';
+import ResultsPage from './components/ResultsPage';
 import SuperiorFactComponent from './components/SuperiorFactComponent';
 
 function App() {
@@ -17,36 +19,51 @@ function App() {
     created_by: 33213
   }
 
-  const get_user = () =>  {
+  const getUser = () =>  {
     return(
       "bob"
     )
   }
 
-  const get_fact = () =>  {
+  const getFact = () =>  {
     return(
-      dFact.statement
+      dFact
     )
   }
 
-  const [get_selected_fact, set_selected_fact] = useState([]);
+  const [inputText, setInputText] = useState("");
+  const [getSelectedFact, setSelectedFact] = useState([]);
+  const [getResults, setResults] = useState([]);
 
   return (
     <div className="App">
+      <Search setInputText={setInputText} 
+      setResults={setResults} 
+      getFact={getFact} 
+      />
       <DirectFactComponent 
       dFact={dFact} 
-      get_user={get_user} 
-      set_selected_fact={set_selected_fact} 
-      get_selected_fact={get_selected_fact}
-      get_fact={get_fact}
+      getUser={getUser} 
+      setSelectedFact={setSelectedFact} 
+      getSelectedFact={getSelectedFact}
+      getFact={getFact}
       />
       <SuperiorFactComponent 
       sFact={sFact}
       dFact={dFact} 
-      get_user={get_user}
-      set_selected_fact={set_selected_fact} 
-      get_selected_fact={get_selected_fact}
-      get_fact={get_fact}
+      getUser={getUser}
+      setSelectedFact={setSelectedFact} 
+      getSelectedFact={getSelectedFact}
+      getFact={getFact}
+      />
+      <ResultsPage 
+      sFact={sFact}
+      dFact={dFact} 
+      getUser={getUser}
+      setSelectedFact={setSelectedFact} 
+      getSelectedFact={getSelectedFact}
+      getFact={getFact}
+      getResults={getResults}
       />
     </div>
   );

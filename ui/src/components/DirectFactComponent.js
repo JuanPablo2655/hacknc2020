@@ -4,15 +4,15 @@ import DirectFact from './DirectFact';
 import PdfPreview from './PdfPreview';
 import TickReference from './TickReference';
 
-const DirectFactComponent = ( {dFact, get_fact, get_user, set_selected_fact, get_selected_fact} ) => {
+const DirectFactComponent = ( {dFact, getFact, getUser, setSelectedFact, getSelectedFact} ) => {
     return(
         <div>            
-            <DirectFact dFact={dFact} get_fact={get_fact}/>
+            <DirectFact dFact={dFact} getFact={getFact}/>
             <PdfPreview dFact={dFact} />
-            <CreditPreview username={get_user()} />
+            <CreditPreview username={getUser()} />
             <TickReference dFact={dFact} 
-            set_selected_fact={set_selected_fact} 
-            get_selected_fact={get_selected_fact} 
+            setSelectedFact={setSelectedFact} 
+            getSelectedFact={getSelectedFact} 
             />
         </div>
     );

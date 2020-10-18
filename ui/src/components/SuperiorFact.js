@@ -1,8 +1,8 @@
 import React from 'react';
 
-const SuperiorFact = ({ sFact, get_fact }) => {
+const SuperiorFact = ({ sFact, getFact }) => {
     return (
-        <h1>{get_fact()}</h1>
+        <h1>{sFact.statement}</h1>
     );
 }
 
