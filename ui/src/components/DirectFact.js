@@ -1,9 +1,7 @@
-import React from 'react';
+import React from "react";
 
-const DirectFact = ( {dFact, getFact} ) => {
-    return (
-    <h1>{dFact.statement}</h1>
-    );
-}
+const DirectFact = ({ dFact, getFact }) => {
+  return <h1>{dFact.statement}</h1>;
+};
 
 export default DirectFact;

@@ -1,9 +1,7 @@
-import React from 'react';
+import React from "react";
 
 const Upload = ({ file, setFile }) => {
-    return(
-        <button>upload</button>
-    );
-}
+  return <button>upload</button>;
+};
 
-export default Upload
+export default Upload;
