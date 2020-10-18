@@ -200,6 +200,17 @@ impl AppDatabase {
         }
         matched
     }
+
+    pub fn save_to_file(&self, filename: &str) {
+        let f = std::fs::File::create(filename).unwrap();
+        serde_yaml::to_writer(f, self).unwrap();
+    }
+
+    pub fn load_from_file(filename: &str) -> Option<Self> {
+        let f = std::fs::File::open(filename).ok()?;
+        let db = serde_yaml::from_reader(f).ok()?;
+        Some(db)
+    }
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Serialize, Deserialize)]

@@ -52,7 +52,6 @@ struct LoginAttempt {
 
 #[post("/v1/login", format = "json", data = "<login>")]
 fn login(login: Json<LoginAttempt>, db: State<DB>) -> Result<Json<UserLoginToken>, Json<AppError>> {
-    println!("{:?}", login);
     db.write()
         .unwrap()
         .try_login(&login.email, &login.password)
@@ -74,31 +73,43 @@ struct SignupAttempt {
 }
 
 #[post("/v1/signup", format = "json", data = "<signup>")]
-fn signup(signup: Json<SignupAttempt>, db: State<DB>) -> Result<Json<UserID>, Json<AppError>> {
+fn signup(
+    signup: Json<SignupAttempt>,
+    db: State<DB>,
+    db_filename: State<String>,
+) -> Result<Json<UserID>, Json<AppError>> {
     let user = User::new(
         signup.username.clone(),
         signup.email.clone(),
         &signup.password,
     );
-    db.write()
-        .unwrap()
+    let mut db = db.write().unwrap();
+    let result = db
         .redeem_signup_token(signup.token.clone(), user)
         .map(Json)
-        .ok_or(Json(AppError::InvalidSignupToken))
+        .ok_or(Json(AppError::InvalidSignupToken));
+
+    db.save_to_file(&db_filename);
+    result
 }
 
 #[post("/v1/upload_document", format = "plain", data = "<data>")]
 fn upload_document(
     user_token: Result<UserLoginToken, String>,
     db: State<DB>,
+    db_filename: State<String>,
     data: Data,
 ) -> Result<Json<DocumentID>, AppError> {
     let mut db = db.write().unwrap();
     let token = user_token.map_err(|s| AppError::OtherError(s))?;
 
     let user_id = db.get_user_id_for_token(token).unwrap();
-    db.save_document(user_id, "/tmp/files".into(), data)
-        .map(Json)
+    let result = db
+        .save_document(user_id, "/tmp/files".into(), data)
+        .map(Json);
+
+    db.save_to_file(&db_filename);
+    result
 }
 
 #[get("/v1/get_document/<document_id>")]
@@ -140,24 +151,28 @@ fn create_fact(
     user_token: Result<UserLoginToken, String>,
     fact: Json<CreateFactAttempt>,
     db: State<DB>,
+    db_filename: State<String>,
 ) -> Result<Json<FactID>, Json<AppError>> {
     let mut db = db.write().unwrap();
     let user_token = user_token.map_err(|s| Json(AppError::OtherError(s)))?;
 
-    if fact.document_id.is_some() && fact.page_number.is_some() {
+    let result = if fact.document_id.is_some() && fact.page_number.is_some() {
         let document_id = fact.document_id.unwrap();
         let page_number = fact.page_number.unwrap();
         let user_id = db.get_user_id_for_token(user_token).unwrap();
         let fact = Fact::new_direct_fact(fact.statement.clone(), user_id, document_id, page_number);
-        Ok(Json(db.insert_fact(user_id, fact)))
+        Json(db.insert_fact(user_id, fact))
     } else if fact.supporting_facts.is_some() {
         let supporting_facts = fact.supporting_facts.clone().unwrap();
         let user_id = db.get_user_id_for_token(user_token).unwrap();
         let fact = Fact::new_superior_fact(fact.statement.clone(), user_id, supporting_facts);
-        Ok(Json(db.insert_fact(user_id, fact)))
+        Json(db.insert_fact(user_id, fact))
     } else {
-        Err(Json(AppError::CouldNotDetermineFactType))
-    }
+        return Err(Json(AppError::CouldNotDetermineFactType));
+    };
+
+    db.save_to_file(&db_filename);
+    Ok(result)
 }
 
 #[get("/v1/get_fact/<fact_id>")]
@@ -170,7 +185,10 @@ fn get_fact(fact_id: String, db: State<DB>) -> Result<Json<Fact>, Json<AppError>
 }
 
 fn main() {
-    let mut db = AppDatabase::new_database();
+    let mut db = AppDatabase::load_from_file("app.db").unwrap_or_else(|| {
+        println!("failed to load from file app.db, using new database");
+        AppDatabase::new_database()
+    });
     let token = db.create_signup_token(None, UserType::AdminUser);
     println!("Signup token {:?}", token);
 
@@ -205,6 +223,7 @@ fn main() {
             ],
         )
         .manage(RwLock::new(db))
+        .manage("app.db".to_string())
         .attach(cors)
         .launch();
 }
