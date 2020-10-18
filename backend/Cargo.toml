@@ -1,0 +1,17 @@
+[package]
+name = "backend"
+version = "0.1.0"
+authors = ["Adam Bryant <adam.w.bryant@outlook.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = {version = "0.4.19", package = "chrono", features=["serde"]}
+serde = {version = "=1.0.101", package = "serde", features = ["derive"]}
+uuid = {version = "0.8.1", package = "uuid", features=["v4", "serde"]}
+url = {version = "2.1.1", package = "url", features=["serde"]}
+serde_yaml = "0.8.13"
+sha2 = "0.9.1"
+rocket = "0.4.5"
+rocket_contrib = "0.4.5"
