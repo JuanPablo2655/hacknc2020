@@ -116,5 +116,11 @@ elif sys.argv[1] == "getfact":
 
     print(req)
     print(req.text)
+elif sys.argv[1] == "search":
+    req = requests.get("{}/v1/search?q={}".format(SERVER_ADDRESS,sys.argv[2]))
+
+    print(req)
+    print(req.text)
+
 else:
     print("unrecoginzed action {}".format(sys.argv[1]))

@@ -188,6 +188,29 @@ impl AppDatabase {
 
         Ok(id)
     }
+
+    pub fn search(&self, query: String) -> Vec<FactID> {
+        let pattern = bitap::Pattern::new(&query).expect("bitap pattern to compile");
+        let mut matched = vec![];
+        for (fact_id, fact) in self.facts.iter() {
+            let statement = fact.get_statement();
+            if pattern.lev(&statement, 2).count() > 0 {
+                matched.push(*fact_id);
+            }
+        }
+        matched
+    }
+
+    pub fn save_to_file(&self, filename: &str) {
+        let f = std::fs::File::create(filename).unwrap();
+        serde_yaml::to_writer(f, self).unwrap();
+    }
+
+    pub fn load_from_file(filename: &str) -> Option<Self> {
+        let f = std::fs::File::open(filename).ok()?;
+        let db = serde_yaml::from_reader(f).ok()?;
+        Some(db)
+    }
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Serialize, Deserialize)]

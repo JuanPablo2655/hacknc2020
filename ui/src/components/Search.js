@@ -1,18 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 
-const Search = ({ setInputText, setResults, getFact }) => {
-  const inputTextHandler = (e) => {
-    setInputText(e.target.value);
-  };
-  const resultTextHandler = (e) => {
-    e.preventDefault();
-    setResults([getFact()]);
-  };
+const Search = ({ on_search, on_search_update }) => {
+  const [search_query, set_search_query] = useState("");
+
   return (
-    <form>
-      <input onChange={inputTextHandler} type="text" />
-      <input onClick={resultTextHandler} type="submit" value="Submit" />
-    </form>
+    <div>
+      <input
+        onChange={(e) => {
+          set_search_query(e.target.value);
+          on_search_update && on_search_update(e.target.value);
+        }}
+        value={search_query}
+        type="text"
+      />
+      <input
+        onClick={() => on_search(search_query)}
+        type="submit"
+        value="Submit"
+      />
+    </div>
   );
 };
 

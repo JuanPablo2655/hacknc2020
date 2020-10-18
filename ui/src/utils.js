@@ -77,10 +77,17 @@ export const upload_document = async (login_token, document) => {
   });
   return response.json();
 };
+
+export const search = async (query) => {
+  let response = await fetch(`${website}/v1/search?q=${query}`);
+  return response.json();
+};
+
 export default {
   login,
   logout,
   signup,
   get_fact,
   upload_document,
+  search,
 };
