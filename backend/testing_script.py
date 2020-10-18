@@ -109,7 +109,7 @@ elif sys.argv[1] == "getfact":
     token_file.close()
 
     fact_id_file = open("/tmp/fact_id", "r")
-    fact_id = fact_id_file.read()
+    fact_id = fact_id_file.read().strip()
     fact_id_file.close()
 
     req = requests.get("{}/v1/get_fact/{}".format(SERVER_ADDRESS,fact_id), headers = headers)
