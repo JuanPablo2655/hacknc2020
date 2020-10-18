@@ -4,8 +4,8 @@ import Upload from "./Upload";
 
 Modal.setAppElement("#root");
 
-const DirectFactCreationModel = ({ on_submit }) => {
-  const [modalIsOpen, setIsOpen] = useState(true);
+const DirectFactCreationModel = ({ on_submit, isOpen, onClose }) => {
+  const [modalIsOpen, setIsOpen] = useState(isOpen);
   const [selected_file, set_selected_file] = useState(null);
   const [statement, set_statement] = useState("");
   const [page_number, set_page_number] = useState("");
@@ -19,8 +19,8 @@ const DirectFactCreationModel = ({ on_submit }) => {
 
   return (
     <Modal
-      isOpen={modalIsOpen}
-      onRequestClose={closeModal}
+      isOpen={isOpen}
+      onRequestClose={onClose}
       contentLabel="Example Modal"
     >
       <input

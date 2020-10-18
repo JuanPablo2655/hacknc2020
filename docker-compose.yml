@@ -1,0 +1,12 @@
+version: "3.3"
+services:
+  backend:
+    build: backend
+    environment:
+      ROOT_DIR: /persist
+    ports:
+      - "8000:8000"
+    volumes:
+      - persist:/persist
+volumes:
+  persist:

@@ -168,8 +168,11 @@ impl AppDatabase {
     ) -> Result<DocumentID, AppError> {
         let id = Uuid::new_v4();
 
+        std::fs::create_dir_all(&root_dir).unwrap();
+
         let mut filepath = root_dir.clone();
         filepath.push(format!("{}.pdf", id));
+        println!("saving document to {:?}", &filepath);
 
         document
             .stream_to_file(filepath.clone())

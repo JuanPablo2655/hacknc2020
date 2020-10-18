@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { signup } from "../utils";
 
 Modal.setAppElement("#root");
 
@@ -48,12 +49,12 @@ const Signup = () => {
     event.preventDefault();
   }
   const afterOpenModal = (event) => {
-    if (setInputPassword(event.target.value) !== setConfirmInputPassword(event.target.value)) {
-      console.log("bruh moment")
-    } else {
-      return
-    }
     event.preventDefault();
+    if (inputPassword !== inputConfirmPassword) {
+    } else {
+      return (
+      signup(inputUsername, inputEmail, inputPassword, inputToken).then(() => setIsOpen(false))
+    )}
   };
   return (
     <div>
