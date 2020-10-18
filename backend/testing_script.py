@@ -59,6 +59,62 @@ elif sys.argv[1] == "download":
         f.write(req.content)
 
     print(req)
+elif sys.argv[1] == "directfact":
+    token_file = open("/tmp/login_token", "r")
+    headers = {"Login-Token": token_file.read()}
+    token_file.close()
 
+    document_id_file = open("/tmp/document_id", "r")
+    document_id = document_id_file.read()
+    document_id_file.close()
+
+    direct_fact = {
+        "statement": "This is a fact statement",
+        "document_id": document_id,
+        "page_number": 1,
+
+    }
+
+    req = requests.post("{}/v1/create_fact".format(SERVER_ADDRESS), json=direct_fact, headers= headers)
+
+    print(req)
+    print(req.text)
+    with open("/tmp/fact_id", "w") as f:
+        f.write(req.text.strip().replace('"',''))
+elif sys.argv[1] == "superior":
+    token_file = open("/tmp/login_token", "r")
+    headers = {"Login-Token": token_file.read()}
+    token_file.close()
+
+    document_id_file = open("/tmp/document_id", "r")
+    document_id = document_id_file.read()
+    document_id_file.close()
+
+
+    superior_fact = {
+        "statement": "This is a superior fact statement",
+        "supporting_facts": [document_id]
+    }
+
+    req = requests.post("{}/v1/create_fact".format(SERVER_ADDRESS), json = superior_fact, headers = headers)
+
+    print(req)
+    print(req.text)
+    with open("/tmp/fact_id", "w") as f:
+        f.write(req.text.strip().replace('"',''))
+
+elif sys.argv[1] == "getfact":
+    token_file = open("/tmp/login_token", "r")
+    headers = {"Login-Token": token_file.read()}
+    token_file.close()
+
+    fact_id_file = open("/tmp/fact_id", "r")
+    fact_id = fact_id_file.read()
+    fact_id_file.close()
+
+    req = requests.get("{}/v1/get_fact/{}".format(SERVER_ADDRESS,fact_id), headers = headers)
+
+    print(req)
+    print(req.text)
 else:
     print("unrecoginzed action {}".format(sys.argv[1]))

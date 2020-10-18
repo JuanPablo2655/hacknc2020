@@ -55,6 +55,13 @@ impl AppDatabase {
         id
     }
 
+    pub fn insert_fact(&mut self, user_id: UserID, fact: Fact) -> FactID {
+        let id = self.add_fact(fact);
+        let user = self.users.get_mut(&user_id).unwrap();
+        user.add_uploaded_fact(id);
+        id
+    }
+
     fn add_document(&mut self, document_location: DocumentLocation, document_id: DocumentID) {
         self.documents.insert(document_id, document_location);
     }
@@ -147,6 +154,10 @@ impl AppDatabase {
 
     pub fn get_document(&self, document_id: DocumentID) -> Option<&DocumentLocation> {
         self.documents.get(&document_id)
+    }
+
+    pub fn get_fact(&self, fact_id: FactID) -> Option<&Fact> {
+        self.facts.get(&fact_id)
     }
 
     pub fn save_document(

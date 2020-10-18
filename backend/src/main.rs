@@ -32,6 +32,8 @@ pub enum AppError {
     NoSuchDocument,
     IOError,
     UuidConvertError,
+    FactNotFound,
+    CouldNotDetermineFactType,
     OtherError(String),
 }
 
@@ -118,6 +120,53 @@ fn get_document(
     Ok(doc)
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct CreateFactAttempt {
+    statement: String,
+    document_id: Option<DocumentID>,
+    page_number: Option<u32>,
+    supporting_facts: Option<Vec<FactID>>,
+}
+
+#[post("/v1/create_fact", format = "json", data = "<fact>")]
+fn create_fact(
+    user_token: Result<UserLoginToken, String>,
+    fact: Json<CreateFactAttempt>,
+    db: State<DB>,
+) -> Result<Json<FactID>, Json<AppError>> {
+    let mut db = db.write().unwrap();
+    let user_token = user_token.map_err(|s| Json(AppError::OtherError(s)))?;
+
+    if fact.document_id.is_some() && fact.page_number.is_some() {
+        let document_id = fact.document_id.unwrap();
+        let page_number = fact.page_number.unwrap();
+        let user_id = db.get_user_id_for_token(user_token).unwrap();
+        let fact = Fact::new_direct_fact(fact.statement.clone(), user_id, document_id, page_number);
+        Ok(Json(db.insert_fact(user_id, fact)))
+    } else if fact.supporting_facts.is_some() {
+        let supporting_facts = fact.supporting_facts.clone().unwrap();
+        let user_id = db.get_user_id_for_token(user_token).unwrap();
+        let fact = Fact::new_superior_fact(fact.statement.clone(), user_id, supporting_facts);
+        Ok(Json(db.insert_fact(user_id, fact)))
+    } else {
+        Err(Json(AppError::CouldNotDetermineFactType))
+    }
+}
+
+#[get("/v1/get_fact/<fact_id>")]
+fn get_fact(
+    user_token: Result<UserLoginToken, String>,
+    fact_id: String,
+    db: State<DB>,
+) -> Result<Json<Fact>, Json<AppError>> {
+    let db = db.read().unwrap();
+    let _user_token = user_token.map_err(|s| Json(AppError::OtherError(s)))?;
+    let fact_id = Uuid::parse_str(&fact_id).map_err(|e| Json(AppError::from(e)))?;
+
+    let fact = db.get_fact(fact_id).ok_or(Json(AppError::FactNotFound))?;
+    Ok(Json(fact.clone()))
+}
+
 fn main() {
     let mut db = AppDatabase::new_database();
     let token = db.create_signup_token(None, UserType::AdminUser);
@@ -126,7 +175,16 @@ fn main() {
     rocket::ignite()
         .mount(
             "/",
-            routes![index, login, logout, signup, upload_document, get_document],
+            routes![
+                index,
+                login,
+                logout,
+                signup,
+                upload_document,
+                get_document,
+                create_fact,
+                get_fact
+            ],
         )
         .manage(RwLock::new(db))
         .launch();

@@ -61,4 +61,8 @@ impl User {
     pub fn add_uploaded_document(&mut self, id: DocumentID) {
         self.uploaded_documents.push(id);
     }
+
+    pub fn add_uploaded_fact(&mut self, fact_id: FactID) {
+        self.uploaded_documents.push(fact_id);
+    }
 }
