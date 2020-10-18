@@ -17,6 +17,7 @@ const customStyles = {
 const Signin = () => {
   const [inputUsername, setInputUsername] = useState("");
   const [inputEmail, setinputEmail] = useState("");
+  const [inputPassword, setInputPassword] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);

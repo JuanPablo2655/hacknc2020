@@ -18,6 +18,8 @@ const Signup = () => {
   const [inputUsername, setInputUsername] = useState("");
   const [inputEmail, setinputEmail] = useState("");
   const [inputToken, setinputToken] = useState("");
+  const [inputPassword, setInputPassword] = useState("");
+  const [inputConfirmPassword, setConfirmInputPassword] = useState("")
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);
@@ -25,10 +27,32 @@ const Signup = () => {
   const closeModal = () => {
     setIsOpen(false);
   };
-  const afterOpenModal = (event) => {
-    console.log(event.target.value);
+  const setUsernameHander = (event) => {
     setInputUsername(event.target.value);
+    event.preventDefault();
+  }
+  const setEmailHander = (event) => {
     setinputEmail(event.target.value);
+    event.preventDefault();
+  }
+  const setPasswordHander = (event) => {
+    setInputPassword(event.target.value);
+    event.preventDefault();
+  }
+  const setConfirmPasswordHander = (event) => {
+    setInputPassword(event.target.value);
+    event.preventDefault();
+  }
+  const setTokenHander = (event) => {
+    setinputToken(event.target.value);
+    event.preventDefault();
+  }
+  const afterOpenModal = (event) => {
+    if setInputPassword(event.target.value) !== setConfirmInputPassword(event.target.value) {
+      console.log("bruh moment")
+    } else {
+      return
+    }
     event.preventDefault();
   };
   return (
@@ -44,15 +68,15 @@ const Signup = () => {
         <button onClick={closeModal}>close</button>
         <h2>Sign Up</h2>
         <form onSubmit={afterOpenModal}>
-          <input type="text" placeholder="Username"></input>
+          <input onChange={setUsernameHander} type="text" placeholder="Username"></input>
           <br></br>
-          <input type="email" placeholder="Email"></input>
+          <input onChange={setEmailHander} type="email" placeholder="Email"></input>
           <br></br>
-          <input type="password" placeholder="Password"></input>
+          <input onChange={setPasswordHander} type="password" placeholder="Password"></input>
           <br></br>
-          <input type="password" placeholder="Confirm Password"></input>
+          <input onChange={setConfirmPasswordHander} type="password" placeholder="Confirm Password"></input>
           <br></br>
-          <input type="text" placeholder="Sign Up Token"></input>
+          <input onChange={setTokenHander} type="text" placeholder="Sign Up Token"></input>
           <br></br>
           <input type="submit" value="Submit"></input>
         </form>
