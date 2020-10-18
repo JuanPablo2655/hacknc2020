@@ -33,7 +33,6 @@ function App() {
           <Search
             on_search={(q) => {
               set_search_query(q);
-              search(q).then((fact_ids) => set_fact_ids(fact_ids));
               search(q).then((fact_ids) => {set_fact_ids(fact_ids); history.push('/results')});
             }}
             on_search_update={() => {}}
