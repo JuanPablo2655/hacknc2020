@@ -188,7 +188,7 @@ fn get_fact(fact_id: String, db: State<DB>) -> Result<Json<Fact>, Json<AppError>
 }
 
 fn main() {
-    let root_dir = std::env::var("ROOT_DIR").unwrap_or("/tmp".to_string());
+    let root_dir = std::env::var("ROOT_DIR").unwrap_or("./".to_string());
     println!("using {} as root_dir", &root_dir);
     let db_path = format!("{}/app.db", root_dir);
 
