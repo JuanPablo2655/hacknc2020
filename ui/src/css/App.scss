@@ -24,6 +24,10 @@ body, html {
     border-left-width: 0px;
 }
 
+header {
+    float: right;
+}
+
 .wrap{
     width: 35%;
     position: absolute;
@@ -48,8 +52,8 @@ div.search {
         font-size: 20px;
     }
     .search-btn {
-        width: 40px;
-        height: 50px;
+        width: 100px;
+        height: 49px;
         border: 1px solid #707070;
         padding: 5px;
         background: #fff;

@@ -21,7 +21,7 @@ const Search = ({ on_search, on_search_update }) => {
         value="Submit"
         className="search-btn"
       />
-      <img src={SearchLogo}></img>
+      {/* <img src={SearchLogo}></img> */}
     </div>
     </div>
   );
