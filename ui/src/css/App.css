@@ -24,10 +24,6 @@ body, html {
   border-left-width: 0px;
 }
 
-header {
-  float: right;
-}
-
 .wrap {
   width: 35%;
   position: absolute;
