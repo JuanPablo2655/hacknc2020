@@ -14,23 +14,53 @@ const customStyles = {
   },
 };
 
-const Signup = () => {
+const Signup = ({signup}) => {
   const [inputUsername, setInputUsername] = useState("");
   const [inputEmail, setinputEmail] = useState("");
+  const [inputPassword, setinputPassword] = useState("");
+  const [inputConfirmPass, setinputConfirmPass] = useState("");
   const [inputToken, setinputToken] = useState("");
+  const [inputPassword, setInputPassword] = useState("");
+  const [inputConfirmPassword, setConfirmInputPassword] = useState("")
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);
   };
   const closeModal = () => {
     setIsOpen(false);
+    setInputUsername("")
+    setinputEmail("")
+    setinputPassword("")
+    setinputConfirmPass("")
+    setinputToken("")
   };
   const afterOpenModal = (event) => {
-    console.log(event.target.value);
-    setInputUsername(event.target.value);
-    setinputEmail(event.target.value);
     event.preventDefault();
+    if (event.target.name === "Username") {
+      setInputUsername(event.target.value);
+    } else if (event.target.name === "Email"){
+      setinputEmail(event.target.value);
+    } else if (event.target.name === "Password") {
+      setinputPassword(event.target.value);
+    } else if (event.target.name === "ConfirmPassword") {
+      setinputConfirmPass(event.target.value);
+    } else {
+      setinputToken(event.target.value);
+    }
   };
+  const submitHandler = (event) => {
+    event.preventDefault();
+    signup(inputUsername, inputEmail, inputPassword, inputToken).then(console.log)
+  };
+  const validateForm = () => {
+    return (
+      inputEmail.includes("@") &&
+      inputEmail.length > 0 &&
+      inputPassword.length > 0 &&
+      inputToken.length > 0 &&
+      inputPassword === inputConfirmPass
+      )
+    };
   return (
     <div>
       <button onClick={openModal}>Sign Up</button>
@@ -43,18 +73,18 @@ const Signup = () => {
       >
         <button onClick={closeModal}>close</button>
         <h2>Sign Up</h2>
-        <form onSubmit={afterOpenModal}>
-          <input type="text" placeholder="Username"></input>
+        <form>
+          <input onChange={afterOpenModal} type="text" placeholder="Username" name="Username"></input>
           <br></br>
-          <input type="email" placeholder="Email"></input>
+          <input onChange={afterOpenModal} type="email" placeholder="Email" name="Email"></input>
           <br></br>
-          <input type="password" placeholder="Password"></input>
+          <input onChange={afterOpenModal} type="password" placeholder="Password" name="Password"></input>
           <br></br>
-          <input type="password" placeholder="Confirm Password"></input>
+          <input onChange={afterOpenModal} type="password" placeholder="Confirm Password" name="ConfirmPassword"></input>
           <br></br>
-          <input type="text" placeholder="Sign Up Token"></input>
+          <input onChange={afterOpenModal} type="text" placeholder="Sign Up Token" name="Sign Up Token"></input>
           <br></br>
-          <input type="submit" value="Submit"></input>
+          <input disabled={!validateForm()} onClick={submitHandler} type="submit" value="Submit"></input>
         </form>
       </Modal>
     </div>

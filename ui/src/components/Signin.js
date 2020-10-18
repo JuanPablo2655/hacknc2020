@@ -14,22 +14,37 @@ const customStyles = {
   },
 };
 
-const Signin = () => {
-  const [inputUsername, setInputUsername] = useState("");
+const Signin = ({login}) => {
   const [inputEmail, setinputEmail] = useState("");
+  const [inputPassword, setinputPassword] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);
   };
   const closeModal = () => {
     setIsOpen(false);
+    setinputEmail("")
+    setinputPassword("")
   };
   const afterOpenModal = (event) => {
-    console.log(event.target.value);
-    setInputUsername(event.target.value);
-    setinputEmail(event.target.value);
     event.preventDefault();
+    if (event.target.name === "Username") {
+      setinputEmail(event.target.value);
+    } else {
+      setinputPassword(event.target.value);
+    }
   };
+  const submitHandler = (event) => {
+    event.preventDefault();
+    login(inputEmail, inputPassword).then(console.log)
+  };
+  const validateForm = () => {
+    return (
+      inputEmail.includes("@") &&
+      inputEmail.length > 0 &&
+      inputPassword.length > 0 
+      )
+    };
   return (
     <div>
       <button onClick={openModal}>Sign In</button>
@@ -46,16 +61,18 @@ const Signin = () => {
           <input
             onChange={afterOpenModal}
             type="text"
-            placeholder="Username/Email"
+            placeholder="Email"
+            name="Username"
           />
           <br></br>
           <input
             onChange={afterOpenModal}
             type="password"
             placeholder="Password"
+            name="Password"
           />
           <br></br>
-          <input type="submit" value="Submit" />
+          <input disabled={!validateForm()} onClick={submitHandler} type="submit" value="Submit" />
         </form>
       </Modal>
     </div>
