@@ -40,7 +40,7 @@ const Signup = () => {
     event.preventDefault();
   }
   const setConfirmPasswordHander = (event) => {
-    setInputPassword(event.target.value);
+    setConfirmInputPassword(event.target.value);
     event.preventDefault();
   }
   const setTokenHander = (event) => {
@@ -48,7 +48,7 @@ const Signup = () => {
     event.preventDefault();
   }
   const afterOpenModal = (event) => {
-    if setInputPassword(event.target.value) !== setConfirmInputPassword(event.target.value) {
+    if (setInputPassword(event.target.value) !== setConfirmInputPassword(event.target.value)) {
       console.log("bruh moment")
     } else {
       return
