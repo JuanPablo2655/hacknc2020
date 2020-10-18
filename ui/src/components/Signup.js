@@ -20,6 +20,8 @@ const Signup = ({signup}) => {
   const [inputPassword, setinputPassword] = useState("");
   const [inputConfirmPass, setinputConfirmPass] = useState("");
   const [inputToken, setinputToken] = useState("");
+  const [inputPassword, setInputPassword] = useState("");
+  const [inputConfirmPassword, setConfirmInputPassword] = useState("")
   const [modalIsOpen, setIsOpen] = useState(false);
   const openModal = () => {
     setIsOpen(true);

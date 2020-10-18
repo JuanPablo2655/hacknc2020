@@ -6,7 +6,7 @@ import DirectFactComponent from "./components/DirectFactComponent";
 import ResultsPage from "./components/ResultsPage";
 import SuperiorFactComponent from "./components/SuperiorFactComponent";
 import Signin from "./components/Signin";
-import Signup from "./components/Signup"
+import Signup from "./components/Signup";
 
 function App() {
   const website = "http://localhost:8000";
