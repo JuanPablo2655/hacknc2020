@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {sha256} from "js-sha256";
 import "./App.css";
 import Search from "./components/Search";
 import DirectFactComponent from "./components/DirectFactComponent";
@@ -31,6 +32,10 @@ function App() {
   };
 
     const signup = async (username, email, password, signup_token) => {
+        let hash = sha256.create();
+        hash.update(password);
+        hash.hex();
+        console.log(hash);
         let response = await fetch(`${website}/v1/signup`, {
             method: "POST",
             headers: {
@@ -40,7 +45,7 @@ function App() {
                 {
                     username,
                     email,
-                    password,
+                    password: hash.toString(),
                     token: signup_token,
                 }
             )
@@ -64,7 +69,6 @@ function App() {
       return response.json();
 
   };
-
     useEffect(() => {
         signup("test_username", "test@email.com", "password", "2cd24046-ea14-4f24-8f8f-847c659ebb22").then(console.log).catch(console.error);
     })
