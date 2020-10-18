@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { upload_document, create_fact } from "./utils";
-import "./App.css";
+import "./css/App.css";
 import DirectFactCreationModal from "./components/DirectFactCreationModal";
+import Header from "./components/Header";
 
 function App() {
   const login_token = {
@@ -10,6 +11,7 @@ function App() {
   };
   return (
     <div className="App">
+      <Header/>
       <DirectFactCreationModal
         on_submit={(statement, file, page_number) => {
           (async () => {

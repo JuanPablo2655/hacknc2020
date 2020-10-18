@@ -3,18 +3,11 @@ import React from "react";
 import Signin from "./Signin";
 import Signup from "./Signup";
 
-const Header = ({ setInputUsername, setinputEmail, setinputToken }) => {
+const Header = () => {
   return (
     <header>
-      <Signup
-        setInputUsername={setInputUsername}
-        setinputEmail={setinputEmail}
-        setinputToken={setinputToken}
-      />
-      <Signin
-        setInputUsername={setInputUsername}
-        setinputEmail={setinputEmail}
-      />
+      <Signup/>
+      <Signin/>
     </header>
   );
 };

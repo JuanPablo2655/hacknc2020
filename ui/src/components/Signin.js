@@ -47,7 +47,7 @@ const Signin = ({login}) => {
     };
   return (
     <div>
-      <button onClick={openModal}>Sign In</button>
+      <button onClick={openModal} className="sign-in-btn">Sign In</button>
       <Modal
         isOpen={modalIsOpen}
         onAfteropen={afterOpenModal}
