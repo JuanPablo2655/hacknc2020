@@ -5,6 +5,8 @@ import Search from "./components/Search";
 import DirectFactComponent from "./components/DirectFactComponent";
 import ResultsPage from "./components/ResultsPage";
 import SuperiorFactComponent from "./components/SuperiorFactComponent";
+import Signin from "./components/Signin";
+import Signup from "./components/Signup"
 
 function App() {
   const website = "http://localhost:8000";
@@ -54,6 +56,9 @@ function App() {
     };
 
   const login = async (email, password) => {
+      let hash = sha256.create();
+      hash.update(password);
+      hash.hex();
       let response = await fetch(`${website}/v1/login`, {
           method: "POST",
           headers: {
@@ -62,16 +67,13 @@ function App() {
           body: JSON.stringify(
               {
                   email,
-                  password,
+                  password: hash.toString(),
               }
           )
       });
       return response.json();
 
   };
-    useEffect(() => {
-        signup("test_username", "test@email.com", "password", "2cd24046-ea14-4f24-8f8f-847c659ebb22").then(console.log).catch(console.error);
-    })
 
   const [inputText, setInputText] = useState("");
   const [getSelectedFact, setSelectedFact] = useState([]);
@@ -79,6 +81,8 @@ function App() {
 
   return (
     <div className="App">
+      <Signin login={login}/>
+      <Signup signup={signup}/>
       <Search
         setInputText={setInputText}
         setResults={setResults}
