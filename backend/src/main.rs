@@ -121,6 +121,12 @@ fn get_document(
     Ok(doc)
 }
 
+#[get("/v1/search?<q>")]
+fn search(q: String, db: State<DB>) -> Json<Vec<FactID>> {
+    let db = db.read().unwrap();
+    Json(db.search(q))
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 struct CreateFactAttempt {
     statement: String,
@@ -194,7 +200,8 @@ fn main() {
                 upload_document,
                 get_document,
                 create_fact,
-                get_fact
+                get_fact,
+                search
             ],
         )
         .manage(RwLock::new(db))

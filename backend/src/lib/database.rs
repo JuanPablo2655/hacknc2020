@@ -188,6 +188,18 @@ impl AppDatabase {
 
         Ok(id)
     }
+
+    pub fn search(&self, query: String) -> Vec<FactID> {
+        let pattern = bitap::Pattern::new(&query).expect("bitap pattern to compile");
+        let mut matched = vec![];
+        for (fact_id, fact) in self.facts.iter() {
+            let statement = fact.get_statement();
+            if pattern.lev(&statement, 2).count() > 0 {
+                matched.push(*fact_id);
+            }
+        }
+        matched
+    }
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Serialize, Deserialize)]
