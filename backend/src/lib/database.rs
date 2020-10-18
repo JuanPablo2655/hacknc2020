@@ -55,13 +55,9 @@ impl AppDatabase {
         id
     }
 
-    fn add_document(&mut self, document_location: DocumentLocation) -> DocumentID {
-        let id = Uuid::new_v4();
-
-        self.documents.insert(id, document_location);
-        id
+    fn add_document(&mut self, document_location: DocumentLocation, document_id: DocumentID) {
+        self.documents.insert(document_id, document_location);
     }
-
     fn create_login_token(&mut self, user_id: UserID) -> UserLoginToken {
         let token = UserLoginToken::new(Duration::days(1));
         self.logged_in_users.push((user_id, token));
@@ -149,6 +145,10 @@ impl AppDatabase {
             .map(|id| *id)
     }
 
+    pub fn get_document(&self, document_id: DocumentID) -> Option<&DocumentLocation> {
+        self.documents.get(&document_id)
+    }
+
     pub fn save_document(
         &mut self,
         user_id: UserID,
@@ -161,9 +161,16 @@ impl AppDatabase {
         filepath.push(format!("{}.pdf", id));
 
         document
-            .stream_to_file(filepath)
+            .stream_to_file(filepath.clone())
             .map(|n| println!("wrote {} bytes", n))
             .map_err(AppError::from)?;
+
+        self.add_document(
+            DocumentLocation::OnDisk {
+                file_path: filepath,
+            },
+            id,
+        );
 
         let user = self.users.get_mut(&user_id).unwrap();
         user.add_uploaded_document(id);

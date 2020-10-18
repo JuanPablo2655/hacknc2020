@@ -28,6 +28,7 @@ elif sys.argv[1] == "login":
     print(req.text)
     with open("/tmp/login_token", "w") as f:
         f.write(req.json()["token"].strip())
+
 elif sys.argv[1] == "upload":
     token_file = open("/tmp/login_token", "r")
     headers = {'Content-Type': 'text/plain', "Login-Token": token_file.read()}
@@ -37,9 +38,27 @@ elif sys.argv[1] == "upload":
     data = upload_file.read()
     upload_file.close()
 
-    req = requests.post("{}/v1/upload_document".format(SERVER_ADDRESS), data=data, headers= headers)
+    req = requests.post("{}/v1/upload_document".format(SERVER_ADDRESS),  data= data, headers= headers)
     print(req)
     print(req.text)
+
+    with open("/tmp/document_id", "w") as f:
+        f.write(req.text.strip().replace('"',''))
+
+
+elif sys.argv[1] == "download":
+    token_file = open("/tmp/login_token", "r")
+    headers = {"Login-Token": token_file.read()}
+    token_file.close()
+
+    document_id_file = open("/tmp/document_id", "r")
+    req = requests.get("{}/v1/get_document/{}".format(SERVER_ADDRESS, document_id_file.read()), headers= headers)
+    document_id_file.close()
+
+    with open("test.pdf", "wb") as f:
+        f.write(req.content)
+
+    print(req)
 
 else:
     print("unrecoginzed action {}".format(sys.argv[1]))

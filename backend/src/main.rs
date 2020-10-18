@@ -5,10 +5,11 @@ use lib::prelude::*;
 use std::sync::RwLock;
 
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[macro_use]
 extern crate rocket;
-use rocket::{Data, State};
+use rocket::{response::NamedFile, Data, State};
 use rocket_contrib::json::Json;
 
 #[get("/")]
@@ -28,13 +29,21 @@ struct LoginAttempt {
 pub enum AppError {
     BadUsernameOrPassword,
     InvalidSignupToken,
+    NoSuchDocument,
     IOError,
+    UuidConvertError,
     OtherError(String),
 }
 
 impl From<std::io::Error> for AppError {
     fn from(_error: std::io::Error) -> Self {
         Self::IOError
+    }
+}
+
+impl From<uuid::Error> for AppError {
+    fn from(_error: uuid::Error) -> Self {
+        Self::UuidConvertError
     }
 }
 
@@ -89,13 +98,36 @@ fn upload_document(
         .map(Json)
 }
 
+#[get("/v1/get_document/<document_id>")]
+fn get_document(
+    user_token: Result<UserLoginToken, String>,
+    document_id: String,
+    db: State<DB>,
+) -> Result<NamedFile, AppError> {
+    let id = Uuid::parse_str(&document_id)?;
+    let db = db.read().unwrap();
+
+    // used just to enforce logged in users only
+    let _token = user_token.map_err(|s| AppError::OtherError(s))?;
+    let document_location = db.get_document(id).ok_or(AppError::NoSuchDocument)?;
+
+    let doc = match document_location {
+        DocumentLocation::OnDisk { file_path } => NamedFile::open(file_path)?,
+        _ => panic!("document is not on disk"),
+    };
+    Ok(doc)
+}
+
 fn main() {
     let mut db = AppDatabase::new_database();
     let token = db.create_signup_token(None, UserType::AdminUser);
     println!("Signup token {:?}", token);
 
     rocket::ignite()
-        .mount("/", routes![index, login, logout, signup, upload_document])
+        .mount(
+            "/",
+            routes![index, login, logout, signup, upload_document, get_document],
+        )
         .manage(RwLock::new(db))
         .launch();
 }
