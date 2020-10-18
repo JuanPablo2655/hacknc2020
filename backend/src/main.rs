@@ -9,8 +9,9 @@ use uuid::Uuid;
 
 #[macro_use]
 extern crate rocket;
-use rocket::{response::NamedFile, Data, State};
+use rocket::{http::Method, response::NamedFile, Data, State};
 use rocket_contrib::json::Json;
+use rocket_cors::{AllowedHeaders, AllowedOrigins};
 
 #[get("/")]
 fn index() -> &'static str {
@@ -18,12 +19,6 @@ fn index() -> &'static str {
 }
 
 type DB = RwLock<AppDatabase>;
-
-#[derive(Debug, Serialize, Deserialize)]
-struct LoginAttempt {
-    email: String,
-    password: String,
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum AppError {
@@ -47,6 +42,12 @@ impl From<uuid::Error> for AppError {
     fn from(_error: uuid::Error) -> Self {
         Self::UuidConvertError
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct LoginAttempt {
+    email: String,
+    password: String,
 }
 
 #[post("/v1/login", format = "json", data = "<login>")]
@@ -154,13 +155,8 @@ fn create_fact(
 }
 
 #[get("/v1/get_fact/<fact_id>")]
-fn get_fact(
-    user_token: Result<UserLoginToken, String>,
-    fact_id: String,
-    db: State<DB>,
-) -> Result<Json<Fact>, Json<AppError>> {
+fn get_fact(fact_id: String, db: State<DB>) -> Result<Json<Fact>, Json<AppError>> {
     let db = db.read().unwrap();
-    let _user_token = user_token.map_err(|s| Json(AppError::OtherError(s)))?;
     let fact_id = Uuid::parse_str(&fact_id).map_err(|e| Json(AppError::from(e)))?;
 
     let fact = db.get_fact(fact_id).ok_or(Json(AppError::FactNotFound))?;
@@ -171,6 +167,21 @@ fn main() {
     let mut db = AppDatabase::new_database();
     let token = db.create_signup_token(None, UserType::AdminUser);
     println!("Signup token {:?}", token);
+
+    let allowed_origins = AllowedOrigins::all();
+
+    // You can also deserialize this
+    let cors = rocket_cors::CorsOptions {
+        allowed_origins,
+        allowed_methods: vec![Method::Get, Method::Post]
+            .into_iter()
+            .map(From::from)
+            .collect(),
+        allow_credentials: true,
+        ..Default::default()
+    }
+    .to_cors()
+    .unwrap();
 
     rocket::ignite()
         .mount(
@@ -187,5 +198,6 @@ fn main() {
             ],
         )
         .manage(RwLock::new(db))
+        .attach(cors)
         .launch();
 }

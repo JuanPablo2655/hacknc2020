@@ -228,7 +228,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for UserLoginToken {
             .get_one("Login-Token")
             .into_outcome((
                 Status::from_code(400).unwrap(),
-                "Missing login_token header".to_string(),
+                "Missing Login-Token header".to_string(),
             ))
             .and_then(|token_str| {
                 db.get_login_token(&token_str.to_string()).into_outcome((
