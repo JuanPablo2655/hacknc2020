@@ -2,6 +2,7 @@
 
 mod lib;
 use lib::prelude::*;
+use std::path::PathBuf;
 use std::sync::RwLock;
 
 use serde::{Deserialize, Serialize};
@@ -104,8 +105,10 @@ fn upload_document(
     let token = user_token.map_err(|s| AppError::OtherError(s))?;
 
     let user_id = db.get_user_id_for_token(token).unwrap();
+
+    let root_dir = std::env::var("ROOT_DIR").unwrap_or("/tmp".to_string());
     let result = db
-        .save_document(user_id, "/tmp/files".into(), data)
+        .save_document(user_id, PathBuf::from(format!("{}/files", root_dir)), data)
         .map(Json);
 
     db.save_to_file(&db_filename);
@@ -185,7 +188,11 @@ fn get_fact(fact_id: String, db: State<DB>) -> Result<Json<Fact>, Json<AppError>
 }
 
 fn main() {
-    let mut db = AppDatabase::load_from_file("app.db").unwrap_or_else(|| {
+    let root_dir = std::env::var("ROOT_DIR").unwrap_or("/tmp".to_string());
+    println!("using {} as root_dir", &root_dir);
+    let db_path = format!("{}/app.db", root_dir);
+
+    let mut db = AppDatabase::load_from_file(&db_path).unwrap_or_else(|| {
         println!("failed to load from file app.db, using new database");
         AppDatabase::new_database()
     });
@@ -223,7 +230,7 @@ fn main() {
             ],
         )
         .manage(RwLock::new(db))
-        .manage("app.db".to_string())
+        .manage(db_path)
         .attach(cors)
         .launch();
 }
