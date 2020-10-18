@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Modal from "react-modal";
+import { login } from "../utils";
 
 Modal.setAppElement("#root");
 
@@ -14,7 +15,7 @@ const customStyles = {
   },
 };
 
-const Signin = ({login}) => {
+const Signin = () => {
   const [inputEmail, setinputEmail] = useState("");
   const [inputPassword, setinputPassword] = useState("");
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -23,28 +24,19 @@ const Signin = ({login}) => {
   };
   const closeModal = () => {
     setIsOpen(false);
-    setinputEmail("")
-    setinputPassword("")
   };
+  const setEmailHander = (event) => {
+    setinputEmail(event.target.value);
+    event.preventDefault();
+  }
+  const setPasswordHander = (event) => {
+    setinputPassword(event.target.value);
+    event.preventDefault();
+  }
   const afterOpenModal = (event) => {
     event.preventDefault();
-    if (event.target.name === "Username") {
-      setinputEmail(event.target.value);
-    } else {
-      setinputPassword(event.target.value);
-    }
+    login(inputEmail, inputPassword).then(() => setIsOpen(false))
   };
-  const submitHandler = (event) => {
-    event.preventDefault();
-    login(inputEmail, inputPassword).then(console.log)
-  };
-  const validateForm = () => {
-    return (
-      inputEmail.includes("@") &&
-      inputEmail.length > 0 &&
-      inputPassword.length > 0 
-      )
-    };
   return (
     <div>
       <button onClick={openModal} className="sign-in-btn">Sign In</button>
@@ -57,22 +49,22 @@ const Signin = ({login}) => {
       >
         <button onClick={closeModal}>close</button>
         <h2>Sign In</h2>
-        <form>
+        <form onSubmit={afterOpenModal}>
           <input
-            onChange={afterOpenModal}
+            onChange={setEmailHander}
             type="text"
             placeholder="Email"
             name="Username"
           />
           <br></br>
           <input
-            onChange={afterOpenModal}
+            onChange={setPasswordHander}
             type="password"
             placeholder="Password"
             name="Password"
           />
           <br></br>
-          <input disabled={!validateForm()} onClick={submitHandler} type="submit" value="Submit" />
+          <input type="submit" value="Submit" />
         </form>
       </Modal>
     </div>
