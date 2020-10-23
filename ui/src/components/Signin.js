@@ -16,52 +16,62 @@ const customStyles = {
 };
 
 const Signin = () => {
-  const [inputEmail, setinputEmail] = useState("");
-  const [inputPassword, setinputPassword] = useState("");
+  const [inputState, setInputState] = useState({
+    email: "",
+    password: "",
+  });
+
+  const input_handler = (e) => {
+    setInputState({ ...inputState, [e.target.name]: e.target.value });
+  };
   const [modalIsOpen, setIsOpen] = useState(false);
-  const openModal = () => {
-    setIsOpen(true);
-  };
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-  const setEmailHander = (event) => {
-    setinputEmail(event.target.value);
+  const [failure_reason, set_failure_reason] = useState(null);
+  const onSignin = (event) => {
     event.preventDefault();
-  }
-  const setPasswordHander = (event) => {
-    setinputPassword(event.target.value);
-    event.preventDefault();
-  }
-  const afterOpenModal = (event) => {
-    event.preventDefault();
-    login(inputEmail, inputPassword).then(() => setIsOpen(false))
+    login(inputState.username, inputState.password).then((answer) => {
+      if (answer === "BadUsernameOrPassword") {
+        set_failure_reason(answer);
+      } else {
+        setIsOpen(false);
+      }
+    });
   };
   return (
-    <div>
-      <button onClick={openModal} className="sign-in-btn">Sign In</button>
+    <div className="sign-btn-container">
+      <button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+        className="sign-in-btn"
+      >
+        Sign In
+      </button>
       <Modal
         isOpen={modalIsOpen}
-        onAfteropen={afterOpenModal}
-        onRequestClose={closeModal}
+        onRequestClose={() => {
+          setIsOpen(false);
+        }}
         style={customStyles}
         contentLabel="Example Modal"
       >
-        <button onClick={closeModal}>close</button>
+        <button onClick={() => setIsOpen(false)}>close</button>
+        {failure_reason && <div>{failure_reason}</div>}
         <h2>Sign In</h2>
-        <form onSubmit={afterOpenModal}>
+        <form onSubmit={onSignin}>
           <input
-            onChange={setEmailHander}
+            onChange={input_handler}
             type="text"
             placeholder="Email"
-            name="Username"
+            name="email"
+            value={inputState.email}
           />
           <br></br>
           <input
-            onChange={setPasswordHander}
+            onChange={input_handler}
             type="password"
             placeholder="Password"
-            name="Password"
+            name="password"
+            value={inputState.password}
           />
           <br></br>
           <input type="submit" value="Submit" />
