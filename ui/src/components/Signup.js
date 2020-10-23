@@ -28,7 +28,7 @@ const Signup = () => {
   };
   const [modalIsOpen, setIsOpen] = useState(false);
 
-  const afterOpenModal = (event) => {
+  const onSignup = (event) => {
     event.preventDefault();
     if (inputState.password !== inputState.confirm_password) {
     } else {
@@ -66,7 +66,7 @@ const Signup = () => {
           close
         </button>
         <h2>Sign Up</h2>
-        <form onSubmit={afterOpenModal} className="sign-up">
+        <form onSubmit={onSignup} className="sign-up">
           <input
             onChange={inputHandler}
             type="text"
